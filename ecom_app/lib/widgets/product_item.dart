@@ -14,7 +14,7 @@ class ProductItem extends StatelessWidget {
   //     {@required this.id, @required this.imageUrl, @required this.title});
   @override
   Widget build(BuildContext context) {
-    final product = Provider.of<Product>(context, listen: false);
+    final product = Provider.of<Product>(context);
     final cart =Provider.of<Cart>(context, listen: false);
     return ClipRRect(
       borderRadius: BorderRadius.circular(15),

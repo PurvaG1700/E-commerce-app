@@ -8,7 +8,7 @@ class CartItem extends StatelessWidget {
   final double price;
   final int quantity;
   final String title;
-  CartItem(this.id,this.productId, this.price, this.quantity, this.title);
+  CartItem(this.id, this.productId, this.price, this.quantity, this.title);
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,6 @@ class CartItem extends StatelessWidget {
       key: ValueKey(id),
       background: Container(
         color: Colors.redAccent,
-        
         child: Icon(
           Icons.delete,
           color: Colors.white,
@@ -24,15 +23,37 @@ class CartItem extends StatelessWidget {
         ),
         alignment: Alignment.centerRight,
         padding: EdgeInsets.only(right: 5),
-         margin: EdgeInsets.symmetric(
+        margin: EdgeInsets.symmetric(
           horizontal: 15,
           vertical: 4,
         ),
-        
       ),
       direction: DismissDirection.endToStart,
-      onDismissed: (direction){
-        Provider.of<Cart>(context,listen: false).removeItem(productId);
+      confirmDismiss: (direction) {
+        return showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text('Are you sure?'),
+            content: Text('Do you want to remove the item from cart?'),
+            actions: [
+              FlatButton(
+                child: Text('No'),
+                onPressed: () {
+                  Navigator.of(ctx).pop(false);
+                },
+              ),
+              FlatButton(
+                child: Text('Yes'),
+                onPressed: () {
+                  Navigator.of(ctx).pop(true);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+      onDismissed: (direction) {
+        Provider.of<Cart>(context, listen: false).removeItem(productId);
       },
       child: Card(
         margin: EdgeInsets.symmetric(

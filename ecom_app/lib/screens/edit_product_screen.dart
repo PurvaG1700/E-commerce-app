@@ -21,6 +21,13 @@ class _EditProductScreenState extends State<EditProductScreen> {
     description: '',
     imageUrl: '',
   );
+  var _isInit = true;
+  var _initValues = {
+    'title': '',
+    'price': '',
+    'description': '',
+    'imageUrl': '',
+  };
 
   @override
   void initState() {
@@ -30,11 +37,33 @@ class _EditProductScreenState extends State<EditProductScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    if (_isInit) {
+      final productId = ModalRoute.of(context).settings.arguments as String;
+      if (productId != null) {
+        _editedProduct =
+            Provider.of<Products>(context, listen: false).findById(productId);
+
+        _initValues = {
+          'title': _editedProduct.title,
+          'price': _editedProduct.price.toString(),
+          'description': _editedProduct.description,
+          'imageUrl': '',
+        };
+        _imageUrlController.text = _editedProduct.imageUrl;
+      }
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
+
+  @override
   void dispose() {
     // TODO: implement dispose
     _imageUrlFocusNode.removeListener(_updateImageUrl);
     _imageUrlController.dispose();
-    _imageUrlController.dispose();
+
     super.dispose();
   }
 
@@ -50,8 +79,13 @@ class _EditProductScreenState extends State<EditProductScreen> {
       return;
     }
     _form.currentState.save();
+    if (_editedProduct.id != null) {
+      Provider.of<Products>(context, listen: false)
+          .updateProduct(_editedProduct.id, _editedProduct);
+    } else {
+      Provider.of<Products>(context, listen: false).addProduct(_editedProduct);
+    }
 
-    Provider.of<Products>(context,listen: false).addProduct(_editedProduct);
     Navigator.of(context).pop();
   }
 
@@ -74,16 +108,17 @@ class _EditProductScreenState extends State<EditProductScreen> {
           child: ListView(
             children: [
               TextFormField(
+                initialValue: _initValues['title'],
                 decoration: InputDecoration(labelText: 'Title'),
                 textInputAction: TextInputAction.next,
                 onSaved: (value) {
                   _editedProduct = Product(
-                    title: value,
-                    price: _editedProduct.price,
-                    description: _editedProduct.description,
-                    id: _editedProduct.id,
-                    imageUrl: _editedProduct.imageUrl,
-                  );
+                      title: value,
+                      price: _editedProduct.price,
+                      description: _editedProduct.description,
+                      id: _editedProduct.id,
+                      imageUrl: _editedProduct.imageUrl,
+                      isFavourite: _editedProduct.isFavourite);
                 },
                 validator: (value) {
                   if (value.isEmpty) {
@@ -93,17 +128,18 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 },
               ),
               TextFormField(
+                initialValue: _initValues['price'],
                 decoration: InputDecoration(labelText: 'Price'),
                 textInputAction: TextInputAction.next,
                 keyboardType: TextInputType.number,
                 onSaved: (value) {
                   _editedProduct = Product(
-                    title: _editedProduct.title,
-                    price: double.parse(value),
-                    description: _editedProduct.description,
-                    id: _editedProduct.id,
-                    imageUrl: _editedProduct.imageUrl,
-                  );
+                      title: _editedProduct.title,
+                      price: double.parse(value),
+                      description: _editedProduct.description,
+                      id: _editedProduct.id,
+                      imageUrl: _editedProduct.imageUrl,
+                      isFavourite: _editedProduct.isFavourite);
                 },
                 validator: (value) {
                   if (value.isEmpty) {
@@ -119,17 +155,18 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 },
               ),
               TextFormField(
+                initialValue: _initValues['description'],
                 decoration: InputDecoration(labelText: 'Description'),
                 maxLines: 3,
                 keyboardType: TextInputType.multiline,
                 onSaved: (value) {
                   _editedProduct = Product(
-                    title: _editedProduct.title,
-                    price: _editedProduct.price,
-                    description: value,
-                    id: _editedProduct.id,
-                    imageUrl: _editedProduct.imageUrl,
-                  );
+                      title: _editedProduct.title,
+                      price: _editedProduct.price,
+                      description: value,
+                      id: _editedProduct.id,
+                      imageUrl: _editedProduct.imageUrl,
+                      isFavourite: _editedProduct.isFavourite);
                 },
                 validator: (value) {
                   if (value.isEmpty) {
@@ -176,12 +213,12 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       },
                       onSaved: (value) {
                         _editedProduct = Product(
-                          title: _editedProduct.title,
-                          price: _editedProduct.price,
-                          description: _editedProduct.description,
-                          id: _editedProduct.id,
-                          imageUrl: value,
-                        );
+                            title: _editedProduct.title,
+                            price: _editedProduct.price,
+                            description: _editedProduct.description,
+                            id: _editedProduct.id,
+                            imageUrl: value,
+                            isFavourite: _editedProduct.isFavourite);
                       },
                       validator: (value) {
                         if (value.isEmpty) {

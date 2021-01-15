@@ -69,9 +69,15 @@ class Products with ChangeNotifier {
       price: product.price,
       title: product.title,
       id: DateTime.now().toString(),
-      
     );
     _items.add(newProduct);
+    notifyListeners();
+  }
+
+  void updateProduct(String id, Product newProduct) {
+    final productIndex = _items.indexWhere((element) => element.id == id);
+    
+    _items[productIndex] = newProduct;
     notifyListeners();
   }
 }

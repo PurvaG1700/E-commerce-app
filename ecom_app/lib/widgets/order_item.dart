@@ -35,12 +35,12 @@ class _OrderItemState extends State<OrderItem> {
           ),
           if (_expanded)
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 15,vertical: 4),
+              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 7),
               height: min(widget.order.products.length * 20.0 + 10, 180),
               child: ListView(
                 children: widget.order.products
                     .map((prod) => Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
                               prod.title,
@@ -49,10 +49,13 @@ class _OrderItemState extends State<OrderItem> {
                                 fontSize: 18,
                               ),
                             ),
-                            Text('${prod.quantity}x \$${prod.price}',style: TextStyle(
+                            Text(
+                              '${prod.quantity}x \$${prod.price}',
+                              style: TextStyle(
                                 color: Colors.grey,
                                 fontSize: 18,
-                              ),)
+                              ),
+                            )
                           ],
                         ))
                     .toList(),
